@@ -1016,7 +1016,7 @@ local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox("Menu Settings")
 InterfaceGroup:AddDropdown("GlobalFontDropdown", { 
     Text = "Select Script Font", 
     Values = RobloxFontsList, 
-    Default = table.find(RobloxFontsList, "FredokaOne") or 1, 
+    Default = table.find(RobloxFontsList, "Cartoon") or 1, 
     Multi = false 
 })
 
@@ -1046,7 +1046,6 @@ MenuGroup:AddButton("Unload", function() Library:Unload() end)
 Library.ToggleKeybind = Options.MenuKeybind
 
 Library:OnUnload(function()
-    WatermarkConnection:Disconnect()
     Library.Unloaded = true
 end)
 
