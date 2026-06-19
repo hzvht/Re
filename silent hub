@@ -681,7 +681,7 @@ end))
 -- ================= Tabs Setup (New Sized UI Structure) =================
 local Tabs = {
     Main = Window:AddTab("Main"),           
-    HitEffects = Window:AddTab("Hit-effect"),     
+    HitEffects = Window:AddTab("Hits"),     
     ESP = Window:AddTab("Esp"),         
     Movement = Window:AddTab("Move Anti-aim"),       
     World = Window:AddTab("World"),         
