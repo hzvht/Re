@@ -790,7 +790,7 @@ Options.TargetPartDropdown:OnChanged(function() _G.TargetPartMode = Options.Targ
 TargetGroupBox:AddSlider("TransitionSpeedSlider", { Text = "Root Transfer Speed (Root to Head)", Default = 5, Min = 1, Max = 30, Rounding = 1 })
 Options.TransitionSpeedSlider:OnChanged(function() _G.TransitionSpeed = Options.TransitionSpeedSlider.Value end)
 
-TargetGroupBox:AddSlider("MaxDistanceSlider", { Text = "Max Lock Distance (Studs)", Default = 10000, Min = 1, Max = 10000, Rounding = 0 })
+TargetGroupBox:AddSlider("MaxDistanceSlider", { Text = "Max Lock Distance (Studs)", Default = 10000, Min = 1, Max = 100000, Rounding = 0 })
 Options.MaxDistanceSlider:OnChanged(function() _G.MaxTargetDistance = Options.MaxDistanceSlider.Value end)
 
 FOVGroupBox:AddToggle("FOVVisibleToggle", { Text = "Show FOV Circle", Default = true })
@@ -842,8 +842,8 @@ TracerGroupBox:AddLabel("Tracer Outline Color"):AddColorPicker("TracerLineOutlin
 Options.TracerLineOutlineColorPicker:OnChanged(function() _G.TracerLineOutlineColor = Options.TracerLineOutlineColorPicker.Value end)
 
 -- === TAB 2: HIT EFFECTS ===
-local SoundLeftBox = Tabs.HitEffects:AddLeftGroupbox("Hit Sound Customization")
-local NotifyRightBox = Tabs.HitEffects:AddRightGroupbox("Hit Notification UI Setting")
+local SoundLeftBox = Tabs.HitEffects:AddLeftGroupbox("Hit Sound")
+local NotifyRightBox = Tabs.HitEffects:AddRightGroupbox("Hit Notification")
 
 SoundLeftBox:AddDropdown("HitSoundDropdown", { Text = "Target Hit Sound", Values = {"None", "Custom 1102...", "Neverlose", "Rust", "Fatality", "Fatality 2", "Skeet"}, Default = 1, Multi = false })
 Options.HitSoundDropdown:OnChanged(function() _G.HitSoundMode = Options.HitSoundDropdown.Value end)
@@ -887,7 +887,7 @@ end)
 local EspLeftBox = Tabs.ESP:AddLeftGroupbox("Master Visuals Control")
 local EspRightBox = Tabs.ESP:AddRightGroupbox("Visual Color Customization")
 
-EspLeftBox:AddToggle("MasterESPToggle", { Text = "Master ESP (Enable Visuals)", Default = false })
+EspLeftBox:AddToggle("MasterESPToggle", { Text = "Enable ESP", Default = false })
 :AddKeyPicker("MasterESPKeybind", { Default = "None", SyncToggleState = true, Mode = "Toggle", Text = "Master ESP Bind" })
 Toggles.MasterESPToggle:OnChanged(function() _G.ESPEnabled = Toggles.MasterESPToggle.Value end)
 
@@ -907,8 +907,8 @@ EspRightBox:AddLabel("Name Text Color"):AddColorPicker("NameColorPicker", { Defa
 Options.NameColorPicker:OnChanged(function() _G.ColorName = Options.NameColorPicker.Value end)
 
 -- === TAB 4: MOVEMENT & ANTI AIM ===
-local MoveLeftBox = Tabs.Movement:AddLeftGroupbox("Anti Aim Matrix Config")
-local MoveRightBox = Tabs.Movement:AddRightGroupbox("Movement & Camera Hacks")
+local MoveLeftBox = Tabs.Movement:AddLeftGroupbox("Anti Aim")
+local MoveRightBox = Tabs.Movement:AddRightGroupbox("Movement & Camera")
 
 MoveLeftBox:AddToggle("AntiAimToggle", { Text = "Enable Anti Aim", Default = false })
 :AddKeyPicker("AntiAimKeybind", { Default = "None", SyncToggleState = true, Mode = "Toggle", Text = "Anti Aim Bind" })
@@ -991,7 +991,7 @@ Options.WeatherDropdown:OnChanged(function()
 end)
 
 -- === TAB 6: ADD-ON SCRIPTS CONFIGURATION ===
-local AddonGroupBox = Tabs.Addons:AddLeftGroupbox("External Scripts")
+local AddonGroupBox = Tabs.Addons:AddLeftGroupbox("loaders Scripts")
 
 AddonGroupBox:AddButton({
     Text = "load walkspeed", 
@@ -1037,7 +1037,7 @@ Options.GlobalFontDropdown:OnChanged(function()
     end
 end)
 
-MenuGroup:AddToggle("KeybindMenuOpen", { Default = true, Text = "Open Keybind Menu", Callback = function(value) Library.KeybindFrame.Visible = value end})
+MenuGroup:AddToggle("KeybindMenuOpen", { Default = false, Text = "Open Keybind Menu", Callback = function(value) Library.KeybindFrame.Visible = value end})
 MenuGroup:AddToggle("ShowCustomCursor", {Text = "Custom Cursor", Default = true, Callback = function(Value) Library.ShowCustomCursor = Value end})
 MenuGroup:AddDivider()
 MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
