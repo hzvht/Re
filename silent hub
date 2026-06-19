@@ -87,7 +87,7 @@ _G.HitSoundMode = "None"
 _G.HitSoundVolume = 2 
 local SoundIDs = {
     ["None"] = "None",
-    ["Custom 1102..."] = "rbxassetid://110241936966089", 
+    ["Spark"] = "rbxassetid://110241936966089", 
     ["Neverlose"] = "rbxassetid://18391691942",
     ["Rust"] = "rbxassetid://138750331387064",
     ["Fatality"] = "rbxassetid://111508823459652",
@@ -95,8 +95,8 @@ local SoundIDs = {
     ["Skeet"] = "rbxassetid://80461265049096"
 }
 
-_G.HitNotifyEnabled = true 
-_G.HitNotifyStyle = "Right" 
+_G.HitNotifyEnabled = false 
+_G.HitNotifyStyle = "Center" 
 _G.HitNotifyAnimType = "Smooth" 
 _G.HitNotifyTransparency = 0.0
 _G.HitNotifyPosX = 50 
@@ -332,7 +332,7 @@ end
 
 -- ================= Create Target HUD GUI =================
 local TargetGui = Instance.new("ScreenGui")
-TargetGui.Name = "NusTargetHudGui"
+TargetGui.Name = "TargetHudGui"
 TargetGui.ResetOnSpawn = false
 TargetGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 TargetGui.Parent = CoreGui:FindFirstChild("RobloxGui") or CoreGui
@@ -380,7 +380,7 @@ local MainBarCorner = Instance.new("UICorner") MainBarCorner.CornerRadius = UDim
 
 -- ================= ScreenGui Container for Modern Fat-Font ESP =================
 local EspGui = Instance.new("ScreenGui")
-EspGui.Name = "NusModernEspGui"
+EspGui.Name = "ModernEspGui"
 EspGui.ResetOnSpawn = false
 EspGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 EspGui.Parent = CoreGui:FindFirstChild("RobloxGui") or CoreGui
@@ -690,10 +690,10 @@ local Tabs = {
 }
 
 -- === TAB 1: SILENT AIM CONFIGURATION ===
-local LeftGroupBox = Tabs.Main:AddLeftGroupbox("Silent Aim Core")
+local LeftGroupBox = Tabs.Main:AddLeftGroupbox("Silent Aim")
 local PermLockGroupBox = Tabs.Main:AddLeftGroupbox("Permanent Lock Settings")
 local TargetGroupBox = Tabs.Main:AddLeftGroupbox("Targeting Options")
-local FOVGroupBox = Tabs.Main:AddRightGroupbox("FOV Core Settings")
+local FOVGroupBox = Tabs.Main:AddRightGroupbox("FOV Settings")
 local FOVFillGroupBox = Tabs.Main:AddRightGroupbox("FOV Dynamic Fill")
 local TracerGroupBox = Tabs.Main:AddRightGroupbox("Tracer Line Settings")
 
@@ -710,7 +710,6 @@ Toggles.WallCheckToggle:OnChanged(function() _G.WallCheckEnabled = Toggles.WallC
 
 LeftGroupBox:AddToggle("TeamCheckToggle", { Text = "Enable Team Check", Default = false })
 Toggles.TeamCheckToggle:OnChanged(function() _G.TeamCheckEnabled = Toggles.TeamCheckToggle.Value end)
-LeftGroupBox:AddLabel("<font color='#ff3333'>* Not working in FPS games (Custom Team System)</font>")
 
 PermLockGroupBox:AddToggle("PermLockToggle", { Text = "Enable Perm Lock-On (Ignore FOV)", Default = false })
 :AddKeyPicker("PermLockKeybind", { Default = "None", SyncToggleState = true, Mode = "Toggle", Text = "Perm Lock Bind" })
