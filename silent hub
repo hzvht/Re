@@ -68,6 +68,7 @@ _G.BulletTPEnabled = false
 _G.WallCheckEnabled = false
 _G.TeamCheckEnabled = false 
 _G.DieCheckEnabled = true
+_G.LookAtEnabled = false 
 _G.FOVSize = 100
 _G.FOVVisible = true
 _G.TracerEnabled = true
@@ -75,7 +76,7 @@ _G.TracerEnabled = true
 _G.PermLockEnabled = false
 _G.PermTargetList = {} 
 
-_G.GlobalFontSetting = Enum.Font.FredokaOne 
+_G.GlobalFontSetting = Enum.Font.Cartoon 
 
 local RobloxFontsList = {}
 for _, font in ipairs(Enum.Font:GetEnumItems()) do
@@ -549,6 +550,20 @@ RunService.RenderStepped:Connect(function()
         else MainFrame.Visible = false LastLoggedHudTargetId = 0 end
     else MainFrame.Visible = false LastLoggedHudTargetId = 0 end
 
+    if _G.SilentAimEnabled and _G.LookAtEnabled and LocalPlayer.Character then
+        local Root = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local Humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if Root and Humanoid and Humanoid.Health > 0 and not _G.AntiAimEnabled then
+            if CurrentAimTargetPosition then
+                Humanoid.AutoRotate = false
+                local lookVector = Vector3.new(CurrentAimTargetPosition.X, Root.Position.Y, CurrentAimTargetPosition.Z)
+                Root.CFrame = CFrame.lookAt(Root.Position, lookVector)
+            else
+                Humanoid.AutoRotate = true
+            end
+        end
+    end
+
     if _G.AntiAimEnabled and LocalPlayer.Character then
         local Root = LocalPlayer.Character:FindFirstChild("HumanoidRootPart") local Humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
         if Root and Humanoid and Humanoid.Health > 0 then
@@ -572,7 +587,12 @@ RunService.RenderStepped:Connect(function()
         end
     else
         if LocalPlayer.Character then
-            local Humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid") if Humanoid then Humanoid.AutoRotate = true end
+            local Humanoid = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if Humanoid then
+                if not _G.LookAtEnabled or (_G.LookAtEnabled and not CurrentAimTargetPosition) then
+                    Humanoid.AutoRotate = true
+                end
+            end
             local LowerTorso = LocalPlayer.Character:FindFirstChild("LowerTorso") or LocalPlayer.Character:FindFirstChild("Torso")
             if LowerTorso and LowerTorso:FindFirstChild("RootJoint") then LowerTorso.RootJoint.Transform = CFrame.new() end
         end
@@ -700,6 +720,10 @@ local TracerGroupBox = Tabs.Main:AddRightGroupbox("Tracer Line Settings")
 LeftGroupBox:AddToggle("SilentAimToggle", { Text = "Enable Silent Aim", Default = false })
 :AddKeyPicker("SilentAimKeybind", { Default = "None", SyncToggleState = true, Mode = "Toggle", Text = "Silent Aim Bind" })
 Toggles.SilentAimToggle:OnChanged(function() _G.SilentAimEnabled = Toggles.SilentAimToggle.Value end)
+
+LeftGroupBox:AddToggle("LookAtToggle", { Text = "Enable Look at Target", Default = false })
+:AddKeyPicker("LookAtKeybind", { Default = "None", SyncToggleState = true, Mode = "Toggle", Text = "Look At Bind" })
+Toggles.LookAtToggle:OnChanged(function() _G.LookAtEnabled = Toggles.LookAtToggle.Value end)
 
 LeftGroupBox:AddToggle("BulletTPToggle", { Text = "Enable Bullet TP", Default = false })
 :AddKeyPicker("BulletTPKeybind", { Default = "None", SyncToggleState = true, Mode = "Toggle", Text = "Bullet TP Bind" })
@@ -973,6 +997,32 @@ Options.FogStartSlider:OnChanged(function() Lighting.FogStart = Options.FogStart
 WorldFogBox:AddSlider("FogEndSlider", { Text = "Fog End Distance", Default = Lighting.FogEnd, Min = 0, Max = 10000, Rounding = 0 })
 Options.FogEndSlider:OnChanged(function() Lighting.FogEnd = Options.FogEndSlider.Value end)
 
+-- เพิ่มฟังชั่น Blur เเละ Fps Cap ในกลุ่มขวาของ Tab World
+WorldRightBox:AddSlider("BlurSlider", { Text = "World Blur Effect", Default = 1, Min = 1, Max = 5, Rounding = 1 })
+Options.BlurSlider:OnChanged(function()
+    local blurValue = Options.BlurSlider.Value
+    local blurEffect = Lighting:FindFirstChild("StaticWorldBlur")
+    
+    if blurValue > 1 then
+        if not blurEffect then
+            blurEffect = Instance.new("BlurEffect")
+            blurEffect.Name = "StaticWorldBlur"
+            blurEffect.Parent = Lighting
+        end
+        -- คูณ 8 เพื่อปรับสเกลให้ได้ความเบลอที่ชัดเจนขึ้นตามความเหมาะสม (Max ของ Roblox คือ 56)
+        blurEffect.Size = blurValue * 8 
+    else
+        if blurEffect then blurEffect:Destroy() end
+    end
+end)
+
+WorldRightBox:AddSlider("FpsCapSlider", { Text = "FPS Cap Limit", Default = 60, Min = 60, Max = 999, Rounding = 0 })
+Options.FpsCapSlider:OnChanged(function()
+    if setfpscap then
+        setfpscap(Options.FpsCapSlider.Value)
+    end
+end)
+
 WorldRightBox:AddDropdown("WeatherDropdown", { Text = "Select Weather Environment", Values = {"Clear Sky", "Rain Mode", "Snow Mode"}, Default = 1, Multi = false })
 Options.WeatherDropdown:OnChanged(function()
     local SelectedWeather = Options.WeatherDropdown.Value
@@ -990,7 +1040,7 @@ Options.WeatherDropdown:OnChanged(function()
     end
 end)
 
--- === TAB 6: ADD-ON SCRIPTS CONFIGURATION ===
+-- ================= [FIXED] Loaders Scripts Addon Configuration =================
 local AddonGroupBox = Tabs.Addons:AddLeftGroupbox("loaders Scripts")
 
 AddonGroupBox:AddButton({
@@ -1011,6 +1061,7 @@ AddonGroupBox:AddButton({
 -- === TAB 7: UI SETTINGS & CONFIGS ===
 local InterfaceGroup = Tabs['UI Settings']:AddLeftGroupbox("Global Font Customization")
 local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox("Menu Settings")
+local AppearanceGroup = Tabs['UI Settings']:AddRightGroupbox("UI Appearance Customization")
 
 InterfaceGroup:AddDropdown("GlobalFontDropdown", { 
     Text = "Select Script Font", 
@@ -1034,6 +1085,41 @@ Options.GlobalFontDropdown:OnChanged(function()
     for _, notifyFrame in ipairs(ActiveNotifications) do
         local textObj = notifyFrame:FindFirstChild("NotifyTextLabel")
         if textObj and textObj:IsA("TextLabel") then textObj.Font = SelectedFontEnum end
+    end
+end)
+
+AppearanceGroup:AddDropdown("UIFontDropdown", { 
+    Text = "UI Custom Font", 
+    Values = RobloxFontsList, 
+    Default = table.find(RobloxFontsList, "Cartoon") or 1, 
+    Multi = false 
+})
+
+Options.UIFontDropdown:OnChanged(function()
+    local targetFont = Enum.Font[Options.UIFontDropdown.Value]
+    if not targetFont then return end
+    
+    if Library.ScreenGui then
+        for _, desc in ipairs(Library.ScreenGui:GetDescendants()) do
+            if desc:IsA("TextLabel") or desc:IsA("TextButton") or desc:IsA("TextBox") then
+                desc.Font = targetFont
+            end
+        end
+    else
+        if Library.Main then
+            for _, desc in ipairs(Library.Main:GetDescendants()) do
+                if desc:IsA("TextLabel") or desc:IsA("TextButton") or desc:IsA("TextBox") then
+                    desc.Font = targetFont
+                end
+            end
+        end
+        if Library.KeybindFrame then
+            for _, desc in ipairs(Library.KeybindFrame:GetDescendants()) do
+                if desc:IsA("TextLabel") or desc:IsA("TextButton") then
+                    desc.Font = targetFont
+                end
+            end
+        end
     end
 end)
 
