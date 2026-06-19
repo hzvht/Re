@@ -697,11 +697,11 @@ local FOVGroupBox = Tabs.Main:AddRightGroupbox("FOV Settings")
 local FOVFillGroupBox = Tabs.Main:AddRightGroupbox("FOV Dynamic Fill")
 local TracerGroupBox = Tabs.Main:AddRightGroupbox("Tracer Line Settings")
 
-LeftGroupBox:AddToggle("SilentAimToggle", { Text = "Enable Silent Aim (Bullet Deflection)", Default = false })
+LeftGroupBox:AddToggle("SilentAimToggle", { Text = "Enable Silent Aim", Default = false })
 :AddKeyPicker("SilentAimKeybind", { Default = "None", SyncToggleState = true, Mode = "Toggle", Text = "Silent Aim Bind" })
 Toggles.SilentAimToggle:OnChanged(function() _G.SilentAimEnabled = Toggles.SilentAimToggle.Value end)
 
-LeftGroupBox:AddToggle("BulletTPToggle", { Text = "Enable Bullet TP (Instant Hit)", Default = false })
+LeftGroupBox:AddToggle("BulletTPToggle", { Text = "Enable Bullet TP", Default = false })
 :AddKeyPicker("BulletTPKeybind", { Default = "None", SyncToggleState = true, Mode = "Toggle", Text = "Bullet TP Bind" })
 Toggles.BulletTPToggle:OnChanged(function() _G.BulletTPEnabled = Toggles.BulletTPToggle.Value end)
 
@@ -711,7 +711,7 @@ Toggles.WallCheckToggle:OnChanged(function() _G.WallCheckEnabled = Toggles.WallC
 LeftGroupBox:AddToggle("TeamCheckToggle", { Text = "Enable Team Check", Default = false })
 Toggles.TeamCheckToggle:OnChanged(function() _G.TeamCheckEnabled = Toggles.TeamCheckToggle.Value end)
 
-PermLockGroupBox:AddToggle("PermLockToggle", { Text = "Enable Perm Lock-On (Ignore FOV)", Default = false })
+PermLockGroupBox:AddToggle("PermLockToggle", { Text = "Enable Perm Lock-On", Default = false })
 :AddKeyPicker("PermLockKeybind", { Default = "None", SyncToggleState = true, Mode = "Toggle", Text = "Perm Lock Bind" })
 Toggles.PermLockToggle:OnChanged(function() _G.PermLockEnabled = Toggles.PermLockToggle.Value end)
 
